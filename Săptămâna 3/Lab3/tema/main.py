@@ -1,5 +1,5 @@
-"""TEMĂ LABORATOR EXERCIȚIILE 4-13  """
-
+"""TEMĂ LABORATOR EXERCIȚIILE 1-4-13  """
+# 6 PE DATA VIITOARE
 import os
 
 
@@ -18,6 +18,7 @@ def print_menu():
     print("1. Creare Listă")
     print("2. Secventa de lungime maximă ce conține doar nr prime")
     print("3. Secvența de lungime maximă a cărei elemente au suma 5")
+    print("4. Secventa Maximă Crescătoare")
     print("A. Afișează lista")
     print("Q. Ieșire")
 
@@ -28,7 +29,7 @@ def print_list_menu():
     print("Meniu Creare Listă")
     print("Q. exit")
 
-
+# SERVICES
 def is_prime(n):
     # Verifica daca nr este prim
 
@@ -53,12 +54,13 @@ def creare_lista(a):
         if q.isnumeric():
             a.append(int(q))
         else:
-            print("The input must be a number")
+            print("The input must be a int")
         q = input(":")
     return a
 
 
 def secventa_prime(a):
+    # Gaseste cea mai mare secventa de nr prime
     index_cur = -1
     index = -1
     longest = 0
@@ -82,6 +84,7 @@ def secventa_prime(a):
 
 
 def secvente_suma5(a):
+    # Gaseste cea mai mare secventa de nr cu suma lor 5
     longest_so_far = 0
     longest_cur = 0
     index_so_far = -1
@@ -100,6 +103,29 @@ def secvente_suma5(a):
     return a[index_so_far:index_so_far+longest_so_far]
 
 
+def sir_max(a):
+    # Gaseste cea mai mare secventa de nr crescatoare
+    longest_so_far = 1
+    longest_cur = 1
+    index_so_far = 0
+    index_cur = -1
+    for i in range(len(a)-1):
+        j = i+1
+        while j <= (len(a) -1) and a[j] > a[j-1]  :
+            if longest_cur == 1:
+                index_cur = i
+            longest_cur+= 1
+            j+=1
+
+
+        if longest_cur > longest_so_far:
+            longest_so_far = longest_cur
+            index_so_far = index_cur
+        longest_cur = 1
+    return a[index_so_far:index_so_far + longest_so_far]
+
+
+# Main
 def run():
     a = []
     print_menu()
@@ -121,6 +147,10 @@ def run():
                 cls()
                 b = secvente_suma5(a)
                 print(b)
+            case "4":
+                cls()
+                b = sir_max(a)
+                print(b)
 
             case "a":
                 print(a)
@@ -132,6 +162,7 @@ def run():
         q = input(":").lower()
 
 
+# Teste
 def test_is_prime():
     assert is_prime(2) == 1
     assert is_prime(19) == 1
@@ -161,12 +192,18 @@ def test_secventa_prime():
     assert secventa_prime([1, 0, 2]) == [2]
 
 
+def test_sir_max():
+    assert sir_max([5,22,35,45]) == [5,22,35,45]
+    assert sir_max([5,4,3,2,1]) == [5]
+    assert sir_max([5,6,7,3,4,5,6]) == [3,4,5,6]
+    assert sir_max([0,0,0,0,0]) == [0]
+
+
 def run_test():
     test_is_prime()
     test_secventa_sum5()
     test_secventa_prime()
-
+    test_sir_max()
 
 run_test()
-
 run()
