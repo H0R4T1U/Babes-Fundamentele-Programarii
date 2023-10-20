@@ -163,7 +163,7 @@ def test_gcd():
     """
       test function for gdc
     """
-    assert gcd(0, 2) == 2
+        assert gcd(0, 2) == 2
     assert gcd(2, 0) == 2
     assert gcd(2, 3) == 1
     assert gcd(2, 4) == 2

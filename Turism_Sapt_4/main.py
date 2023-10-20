@@ -9,14 +9,19 @@ def cls():
 
 
 def create_time(timp,format):
-
-    return datetime.datetime.strptime(timp,format)
+    """ CREARE OBIECT DATETIME DIN input string, cu formatul precizat!"""
+    try:
+        x = datetime.datetime.strptime(timp,format)
+    except ValueError:
+        raise ValueError("Data introdusă este invalidă")
+    else:
+        return x
 
 
 def citire(prompt,func=None):
     # Functie de citire cu verificare
 
-    i = input(prompt)
+    i = input(prompt).lower()
     if func is not None:
         try:
             i = func(i)
@@ -26,6 +31,27 @@ def citire(prompt,func=None):
             return i
     else:
         return i
+
+def afisare_calatorii(pachete):
+
+    """
+    Functie de afișare a pachetelor dintr-o lista sau a inexistenței lor în cazul în care nu există
+    :param pachete: lista pachete
+    :return:
+    """
+    print("AFIȘARE PACHETE CĂLĂTORII:")
+    if type(pachete) == list:
+        for i in range(len(pachete)):
+            pachet = pachete[i]
+            sosire = pachet['data_sosire']
+            plecare = pachet['data_plecare']
+            locatie = pachet['locatie'].capitalize()
+            pret = pachet['pret']
+            print(f"{i}. Perioada {sosire.date()}-{plecare.date()} cu destinația {locatie} în Valoare de {pret} RON")
+    else:
+        print("Nu există Pachete de afișat ")
+
+
 # Services
 
 
@@ -36,6 +62,8 @@ def validare(calatorie,a=None):
     :param a: Lista cu călătorii
     :return: 0 sau 1 daca este validă
     """
+    # Procesare locatie
+    calatorie['locatie'] = calatorie['locatie'].lower()
     # Validare ID
     try:
         try:
@@ -50,10 +78,13 @@ def validare(calatorie,a=None):
         # Validare Data
         df = '%d %m %Y'
         try:
-            datetime.datetime.strptime(calatorie['data_sosire'], df)
-            datetime.datetime.strptime(calatorie['data_plecare'],df)
+            calatorie['data_sosire'] = datetime.datetime.strptime(calatorie['data_sosire'], df)
+            calatorie['data_plecare'] = datetime.datetime.strptime(calatorie['data_plecare'], df)
         except ValueError:
             raise ValueError("Incorect data format, Must be DD-MM-YYYY")
+        # Interval de timp pozitiv
+        if calatorie['data_sosire'] > calatorie['data_plecare']:
+            raise ValueError("Intervalul de timp introdus nu este valid!")
         # Validare Pret
         try:
             calatorie['pret'] = int(calatorie['pret'])
@@ -102,7 +133,7 @@ def SERVICE_modifica_pachet(a,calatorie):
         return True
 
 
-def SERVICE_sterge_pachet(a, locatie = None, durata = None, pret = None):
+def SERVICE_sterge_pachet(a, locatie = None, durata = None, pret = None, ind = None):
     """
 
     :param a: Lista cu calatorii
@@ -124,8 +155,8 @@ def SERVICE_sterge_pachet(a, locatie = None, durata = None, pret = None):
     elif durata is not None:
         to_delete = []
         for i in range(len(a)):
-            inceput = create_time(a[i]['data_sosire'],"%d %m %Y")
-            sfarsit = create_time(a[i]['data_plecare'],"%d %m %Y")
+            inceput = a[i]['data_sosire']
+            sfarsit =  a[i]['data_plecare']
             delta = sfarsit - inceput
             if delta.days < durata:
                 to_delete.append(i)
@@ -142,9 +173,54 @@ def SERVICE_sterge_pachet(a, locatie = None, durata = None, pret = None):
         for i in range(start):
             index = to_delete[i]
             del a[index - i]
-
         # sterge pachetele ce au un anumit pret.
+    elif ind is not None:
+        del a[ind]
     return a
+
+
+def SERVICE_cautare_interval_timp(a, inceput, sfarsit):
+    """
+
+    :param a: Lista pachete calatorii
+    :param inceput: inceputul intervalului
+    :param sfarsit: sfarsitul intervalului
+    :return: lista cu pachetele de calatorie in intervalul specificat
+    """
+    lista = []
+    for i in a:
+        if (i['data_sosire'] - inceput).days <= 0 and (i['data_plecare'] - sfarsit).days >= 0:
+            lista.append(i)
+
+    return lista
+
+
+def SERVICE_raport_destinatie(a,locatie):
+    """
+
+    :param a: Lista cu calatorii
+    :param locatie: locatia de raportat
+    :return: nr de pachete de calatorie
+    """
+    nr = 0
+    lista = []
+    for i in a:
+        if i['locatie'] == locatie:
+
+            nr += 1
+            lista.append(i)
+    return (nr, lista)
+
+
+def SERVICE_filtrare_pret_locatie(a, pret, locatie):
+    length = len(a)
+    i = 0
+    while i < length:
+        if a[i]['pret'] > pret and a[i]['locatie'] != locatie:
+            a = SERVICE_sterge_pachet(a, None, None, None, i)
+            i -= 1
+            length -= 1
+        i+= 1
 
 
 # Menus && UI
@@ -179,6 +255,8 @@ def print_menu_cautare():
     print("Q. Ieșire ")
 
 
+
+
 def print_menu_rapoarte():
 
     print("1. Raport Oferte dintr-o destinație")
@@ -199,7 +277,7 @@ def main_menu(a):
     """
     a = []
     print_main_menu()
-    q = input(":").lower()
+    q = citire(":").lower()
     while q != "q":
         match q:
             case "1":
@@ -224,13 +302,13 @@ def main_menu(a):
                 meniu_filtrare(a)
                 cls()
             case "a":
-                print(a)
+                afisare_calatorii(a)
 
             case "q":
                 exit(0)
 
         print_main_menu()
-        q = input(":").lower()
+        q = citire(":").lower()
 
 
 def meniu_pachete(a):
@@ -240,17 +318,17 @@ def meniu_pachete(a):
     :return:
     """
     print_menu_pachete()
-    q = input(":").lower()
+    q = citire(":").lower()
     while q != "q":
         match q:
             case "1":
                 UI_creare_pachet(a)
-                print(f"Dictionaries: {a}")
+                afisare_calatorii(a)
             case "2":
                 UI_modifica_pachet(a)
-                print(f"Dictionaries: {a}")
+                afisare_calatorii(a)
         print_menu_pachete()
-        q = input(":")
+        q = citire(":")
         cls()
     return a
 
@@ -264,7 +342,7 @@ def UI_creare_pachet(a):
     id = input("ID:")
     data_sosire = input("Data Sosire (Zi Luna An):")
     data_plecare = input("Data plecare (Zi Luna An:")
-    locatie = input("Locație:")
+    locatie = input("Locație:").lower()
     pret = input("Preț:")
     calatorie = {'id': id,
                  'data_sosire': data_sosire,
@@ -280,7 +358,7 @@ def UI_modifica_pachet(a):
     id = input("ID:")
     data_sosire = input("Noua Data Sosire (Zi Luna An):")
     data_plecare = input("Data plecare (Zi Luna An:")
-    locatie = input("Locație:")
+    locatie = input("Locație:").lower()
     pret = input("Preț:")
     calatorie = {'id': id,
                  'data_sosire': data_sosire,
@@ -297,7 +375,7 @@ def meniu_stergeri(a):
     :return:
     """
     print_menu_stergeri()
-    q = input(":").lower()
+    q = citire(":").lower()
     while q != "q":
         match q:
             case "1":
@@ -308,15 +386,15 @@ def meniu_stergeri(a):
             case "3":
                 meniu_sterge_pret(a)
         print_menu_stergeri()
-        print(a)
-        q = input(":").lower()
+        afisare_calatorii(a)
+        q = citire(":").lower()
 
     return a
 
 
 def meniu_sterge_locatie(a):
 
-    locatie = input("Introduceți Locatia pe care vreti să o eliminați:")
+    locatie = input("Introduceți Locatia pe care vreti să o eliminați:").lower()
     a = SERVICE_sterge_pachet(a, locatie)
 
 
@@ -337,30 +415,60 @@ def meniu_sterge_pret(a):
 def meniu_cautare(a):
 
     print_menu_cautare()
-    q = input(":").lower()
+    q = citire(":").lower()
     while q != "q":
         match q:
             case "1":
-                break
+                lista = UI_cautare_interval_timp(a)
+                afisare_calatorii(lista)
+        print_menu_cautare()
+        q = citire(":").lower()
+    cls()
 
+
+
+def UI_cautare_interval_timp(a):
+    inceput = create_time(input("Data sosire (Zi Luna An) :"),'%d %m %Y')
+    sfarsit = create_time(input("Data plecare (Zi Luna An :"),'%d %m %Y')
+    return SERVICE_cautare_interval_timp(a, inceput, sfarsit)
 
 def meniu_rapoarte(a):
     print_menu_rapoarte()
-    q = input(":").lower()
+    q = citire(":").lower()
     while q != "q":
         match q:
             case "1":
-                break
+                (nr, lista) = UI_rapoarte_destinatie(a)
+                cls()
+                print_menu_rapoarte()
+                if nr:
+                    print(f"Au fost găsite {nr} pachete:")
+                    afisare_calatorii(lista)
+                else:
+                    print("Nu există nici un pachet pe locația aleasă")
+        q = citire(":").lower()
+
+def UI_rapoarte_destinatie(a):
+    locatie = citire("Destinație: ").lower()
+    return SERVICE_raport_destinatie(a, locatie)
 
 
 def meniu_filtrare(a):
     print_menu_filtrare()
-    q = input(":").lower()
+    q = citire(":").lower()
     while q != "q":
         match q:
             case "1":
-                break
+                UI_filtrare_pret_locatie(a)
+                cls()
+                print_menu_filtrare()
+                afisare_calatorii(a)
+        q = citire(":").lower()
 
+def UI_filtrare_pret_locatie(a):
+    pret = citire("Prețul călătoriei: ", int)
+    locatie = citire("Locația călătoriei: ")
+    SERVICE_filtrare_pret_locatie(a, pret, locatie)
 
 # Teste
 
@@ -371,8 +479,8 @@ def test_adauga_modifica():
 
 
 def test_sterge():
-    a = [{'id':1,'data_sosire':"25 04 2023",'data_plecare':"25 04 2024",'locatie':"Belarus", 'pret':"1500"}]
-    assert SERVICE_sterge_pachet(a,'Belarus') == []
+    a = [{'id':1,'data_sosire':"25 04 2023",'data_plecare':"25 04 2024",'locatie':"belarus", 'pret':"1500"}]
+    assert SERVICE_sterge_pachet(a,'belarus') == []
     assert SERVICE_sterge_pachet(a,None,400) == []
     assert  SERVICE_sterge_pachet(a,None,None,1500) == []
     assert SERVICE_sterge_pachet(a, 'Paris') == a
@@ -382,34 +490,77 @@ def test_validare():
     assert validare({'id':1,
                  'data_sosire':"25 04 2023",
                  'data_plecare':"25 04 2024",
-                 'locatie':"Belarus",
+                 'locatie':"belarus",
                  'pret':"1500"},[]) == True
 
     assert validare({'id': 1,
                          'data_sosire': "25 04 2023",
                          'data_plecare': "25 04 2024",
-                         'locatie': "Belarus",
+                         'locatie': "belarus",
                          'pret': "1500"}, [{'id': 1,
                          'data_sosire': "25 04 2023",
                          'data_plecare': "25 04 2024",
-                         'locatie': "Belarus",
+                         'locatie': "belarus",
                          'pret': "1500"}]) == False
     assert validare({'id': 1,
                          'data_sosire': "25 asdf 2023",
                          'data_plecare': "25 04 2024",
-                         'locatie': "Belarus",
+                         'locatie': "belarus",
                          'pret': "1500"},[]) == False
     assert validare( {'id': 'asdf',
                          'data_sosire': "25 asdf 2023",
                          'data_plecare': "25 04 2024",
-                         'locatie': "Belarus",
+                         'locatie': "belarus",
                          'pret': "1500"},[]) == False
+    assert validare({'id': 1,
+                     'data_sosire': "25 04 2023",
+                     'data_plecare': "25 04 2022",
+                     'locatie': "belarus",
+                     'pret': "1500"}, []) == False
+
+
+def test_creare_timp():
+    assert(type(create_time("25 04 2004", "%d %m %Y"))) == datetime.datetime
+    try:
+        create_time("255 04 2004", "%d %m %Y")
+        assert False
+    except ValueError:
+        assert True
+
+
+def test_cautare_interval_timp():
+    a = [{'id': 1,'data_sosire': create_time("25 04 2023","%d %m %Y"),'data_plecare': create_time("25 04 2024", "%d %m %Y"),'locatie': "belarus", 'pret': "1500"}]
+    inceput = create_time("25 04 2023","%d %m %Y")
+    sfarsit = create_time("25 04 2024", "%d %m %Y")
+    assert SERVICE_cautare_interval_timp(a,inceput,sfarsit) == a
+    inceput = create_time("25 04 2023", "%d %m %Y")
+    sfarsit = create_time("25 05 2024", "%d %m %Y")
+    assert SERVICE_cautare_interval_timp(a, inceput, sfarsit) == []
+
+
+def test_raport_destinatie():
+    a = [{'id': 1,'data_sosire': create_time("25 04 2023","%d %m %Y"),'data_plecare': create_time("25 04 2024", "%d %m %Y"),'locatie': "belarus", 'pret': "1500"}]
+    assert SERVICE_raport_destinatie(a,"belarus") == (1, a)
+    assert SERVICE_raport_destinatie(a, "Paris") == (0, [])
+
+
+def test_filtrare():
+    a = [{'id': 1, 'data_sosire': create_time("25 04 2023", "%d %m %Y"),'data_plecare': create_time("25 04 2024", "%d %m %Y"), 'locatie': "belarus", 'pret': 1500}]
+    SERVICE_filtrare_pret_locatie(a, 1000, 'PARIS')
+    assert a == []
+    a = [{'id': 1, 'data_sosire': create_time("25 04 2023", "%d %m %Y"),'data_plecare': create_time("25 04 2024", "%d %m %Y"), 'locatie': "belarus", 'pret': 1500}]
+    SERVICE_filtrare_pret_locatie(a, 3000, 'belarus')
+    assert a != []
 
 
 def run_tests():
     test_validare()
     test_adauga_modifica()
     test_sterge()
+    test_creare_timp()
+    test_cautare_interval_timp()
+    test_raport_destinatie()
+    test_filtrare()
 
 
 def run():
