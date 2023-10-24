@@ -43,11 +43,12 @@ def afisare_calatorii(pachete):
     if type(pachete) == list:
         for i in range(len(pachete)):
             pachet = pachete[i]
+            id = pachet['id']
             sosire = datetime.datetime.strftime(pachet['data_sosire'],"%d.%m.%Y")
             plecare = datetime.datetime.strftime(pachet['data_plecare'], "%d.%m.%Y")
             locatie = pachet['locatie'].capitalize()
             pret = pachet['pret']
-            print(f"{i}. Perioada de la: {sosire} pana la: {plecare} cu destinația {locatie} în Valoare de {pret} RON")
+            print(f"{id}. Perioada de la: {sosire} pana la: {plecare} cu destinația {locatie} în Valoare de {pret} RON")
     else:
         print("Nu există Pachete de afișat ")
 
@@ -213,6 +214,13 @@ def SERVICE_raport_destinatie(a,locatie):
 
 
 def SERVICE_filtrare_pret_locatie(a, pret, locatie):
+    """
+    Filtrare pachete pret locatie
+    :param a:
+    :param pret:
+    :param locatie:
+    :return:
+    """
     length = len(a)
     i = 0
     while i < length:
@@ -233,11 +241,11 @@ def Service_filtrare_luna(a, luna,):
     length = len(a)
     i = 0
     while i < length:
-        if a[i]['data_sosire'].month >= luna.month and a[i]['data_plecare'].month <= luna.month:
+        if a[i]['data_sosire'].month <= luna.month <= a[i]['data_plecare'].month:
             a = SERVICE_sterge_pachet(a, None, None, None, i)
             i -= 1
             length -= 1
-        elif a[i]['data_sosire'].year < a[i]['data_plecare'].year and a[i]['data_sosire'].month >= luna.month or a[i]['data_plecare'].month <= luna.month:
+        elif a[i]['data_sosire'].year < a[i]['data_plecare'].year and a[i]['data_sosire'].month <= luna.month or a[i]['data_plecare'].month >= luna.month:
             a = SERVICE_sterge_pachet(a, None, None, None, i)
             i -= 1
             length -= 1
@@ -587,6 +595,13 @@ def test_filtrare():
     SERVICE_filtrare_pret_locatie(a, 3000, 'belarus')
     assert a != []
 
+    a = [{'id': 1, 'data_sosire': create_time("25 04 2023", "%d %m %Y"),
+          'data_plecare': create_time("25 01 2024", "%d %m %Y"), 'locatie': "belarus", 'pret': 1500}]
+    Service_filtrare_luna(a, create_time("03", '%m'))
+    assert a != []
+    Service_filtrare_luna(a, create_time('01','%m'))
+    assert a == []
+
 
 def run_tests():
     test_validare()
@@ -599,6 +614,10 @@ def run_tests():
 
 
 def run():
+    """
+    Main function
+    :return:
+    """
     a = []
     run_tests()
     main_menu(a)
