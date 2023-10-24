@@ -43,11 +43,11 @@ def afisare_calatorii(pachete):
     if type(pachete) == list:
         for i in range(len(pachete)):
             pachet = pachete[i]
-            sosire = pachet['data_sosire']
-            plecare = pachet['data_plecare']
+            sosire = datetime.datetime.strftime(pachet['data_sosire'],"%d.%m.%Y")
+            plecare = datetime.datetime.strftime(pachet['data_plecare'], "%d.%m.%Y")
             locatie = pachet['locatie'].capitalize()
             pret = pachet['pret']
-            print(f"{i}. Perioada {sosire.date()}-{plecare.date()} cu destinația {locatie} în Valoare de {pret} RON")
+            print(f"{i}. Perioada de la: {sosire} pana la: {plecare} cu destinația {locatie} în Valoare de {pret} RON")
     else:
         print("Nu există Pachete de afișat ")
 
@@ -223,6 +223,27 @@ def SERVICE_filtrare_pret_locatie(a, pret, locatie):
         i+= 1
 
 
+def Service_filtrare_luna(a, luna,):
+    """
+    Gestionare filtrare bazată pe luna
+    :param a: lista cu pachete
+    :param luna: datetime object care reprezinta reprezinta luna ce trebuie stearsa
+    :return:
+    """
+    length = len(a)
+    i = 0
+    while i < length:
+        if a[i]['data_sosire'].month >= luna.month and a[i]['data_plecare'].month <= luna.month:
+            a = SERVICE_sterge_pachet(a, None, None, None, i)
+            i -= 1
+            length -= 1
+        elif a[i]['data_sosire'].year < a[i]['data_plecare'].year and a[i]['data_sosire'].month >= luna.month or a[i]['data_plecare'].month <= luna.month:
+            a = SERVICE_sterge_pachet(a, None, None, None, i)
+            i -= 1
+            length -= 1
+        i += 1
+
+
 # Menus && UI
 
 def print_main_menu():
@@ -266,6 +287,7 @@ def print_menu_rapoarte():
 def print_menu_filtrare():
 
     print("1. Elimină oferte dintr-un interval")
+    print("2. Elimină pferte dintr-o anumită lună")
     print("Q. Ieșire ")
 
 
@@ -463,12 +485,23 @@ def meniu_filtrare(a):
                 cls()
                 print_menu_filtrare()
                 afisare_calatorii(a)
+            case "2":
+                UI_filtrare_luna(a)
+                cls()
+                print_menu_filtrare()
+                afisare_calatorii(a)
         q = citire(":").lower()
 
 def UI_filtrare_pret_locatie(a):
     pret = citire("Prețul călătoriei: ", int)
     locatie = citire("Locația călătoriei: ")
     SERVICE_filtrare_pret_locatie(a, pret, locatie)
+
+
+def UI_filtrare_luna(a):
+    luna = create_time(input("Introduceți o lună(număr)"),'%m')
+    Service_filtrare_luna(a, luna)
+
 
 # Teste
 
@@ -485,7 +518,9 @@ def test_sterge():
     assert  SERVICE_sterge_pachet(a,None,None,1500) == []
     assert SERVICE_sterge_pachet(a, 'Paris') == a
     assert SERVICE_sterge_pachet(a, None, 290) == a
-    assert SERVICE_sterge_pachet(a, None, None, 1300) ==a
+    assert SERVICE_sterge_pachet(a, None, None, 1300) == a
+
+
 def test_validare():
     assert validare({'id':1,
                  'data_sosire':"25 04 2023",
