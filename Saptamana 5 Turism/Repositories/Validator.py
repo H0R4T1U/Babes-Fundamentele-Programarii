@@ -11,7 +11,11 @@ def Validator(pachet,pachete):
     for p in pachete:
         if get_id(p) == id:
             msg +="ID-ul există deja \n"
+    if pachet['data_sosire'] > pachet['data_plecare']:
+        msg += "Data de plecare nu poate fi mai devreme de data de sosire!\n"
     if msg != "":
         raise Exception(msg)
     else:
         return True
+
+

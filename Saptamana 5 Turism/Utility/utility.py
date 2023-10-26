@@ -1,3 +1,4 @@
+import datetime
 import os
 
 def cls():
@@ -15,5 +16,13 @@ def citire_nr(prompt, f, msg):
     while True:
         try:
             return f(input(prompt))
+        except ValueError:
+            print(msg)
+
+
+def citire_data(format , msg, prompt="Introduceți data(zi luna an): "):
+    while True:
+        try:
+            return datetime.datetime.strptime(input(prompt), format)
         except ValueError:
             print(msg)

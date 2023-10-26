@@ -61,7 +61,7 @@ def get_pret(pachet):
     return pachet['pret']
 
 
-def modifica_pachet(id,data_sosire,data_plecare,locatia,pret):
+def modifica_pachet(pachet, data_sosire, data_plecare, locatie, pret):
     """
     Modifica un pachet bazat pe id
     :param id:
@@ -71,4 +71,20 @@ def modifica_pachet(id,data_sosire,data_plecare,locatia,pret):
     :param pret:
     :return:
     """
-    pass
+
+    pachet['data_sosire'] = data_sosire
+    pachet['data_plecare'] = data_plecare
+    pachet['locatie'] = locatie
+    pachet['pret'] = pret
+    return pachet
+
+
+def sterge_pachet(pachete, id):
+    to_delete = []
+    for i in range(len(pachete)):
+        if pachete[i]['id'] == id:
+            to_delete.append(i)
+    start = len(to_delete)
+    for i in range(start):
+        index = to_delete[i]
+        del pachete[index - i]

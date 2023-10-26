@@ -34,4 +34,35 @@ def test_validare_pachet():
 
 
 def test_modifica_pachet():
-    pass
+    id = 1
+    data_sosire = datetime.datetime.strptime("15 10 2022", "%d %m %Y")
+    data_plecare = datetime.datetime.strptime("16 10 2022", "%d %m %Y")
+    locatie = 'beius'
+    pret = 2500
+    pachet = creaza_pachet(id, data_sosire, data_plecare, locatie, pret)
+    pachet = modifica_pachet(pachet,data_sosire,data_plecare,'oradea',3100)
+
+    assert(get_pret(pachet) == 3100 )
+    assert(get_locatie(pachet) == 'oradea')
+
+
+def test_sterge_pachet():
+    pachete = []
+    data_sosire = datetime.datetime.strptime("25 04 2023", "%d %m %Y")
+    data_plecare = datetime.datetime.strptime("25 05 2023", "%d %m %Y")
+    locatie = "beius"
+    pret = 1500
+    pachete.append(creaza_pachet(1, data_sosire, data_plecare, locatie, pret))
+
+    pachete.append(creaza_pachet(2, data_sosire, data_plecare, locatie, pret))
+    pachete.append(creaza_pachet(3, data_sosire, data_plecare, locatie, pret))
+    sterge_pachet(pachete,2)
+    assert(len(pachete) == 2)
+
+
+
+def test_all_repositories():
+    test_add_pachet()
+    test_validare_pachet()
+    test_modifica_pachet()
+    test_sterge_pachet()

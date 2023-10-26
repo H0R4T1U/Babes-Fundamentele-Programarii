@@ -1,4 +1,5 @@
-from Tests.repository_tests import *
+from Tests.repository_tests import test_all_repositories
+from Tests.Service_tests import test_all_services
 def main_test():
     """
     Functia de legatura a tuturor testelor
@@ -6,6 +7,5 @@ def main_test():
     :return:
     """
     #Repositories tests
-    test_add_pachet()
-    test_validare_pachet()
-    test_modifica_pachet()
+    test_all_repositories()
+    test_all_services()
