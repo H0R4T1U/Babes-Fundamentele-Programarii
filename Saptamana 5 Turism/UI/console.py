@@ -1,5 +1,5 @@
 from Service.Services import cautare_pachete_interval, raport_oferte_destinatie, raport_oferte_interval_cresc, \
-    raport_medie_pret_dest, cautare_pachete_dest_pret, cautare_pachete_sfarsit
+    raport_medie_pret_dest, cautare_pachete_dest_pret, cautare_pachete_sfarsit, filtrare_pret_destinatie, filtrare_luna
 from Service.crud import adauga_pachet_lista, SERVICE_modifica_pachet, stergere_pachete_destinatie, \
     stergere_pachete_data, stergere_pachete_pret
 from Utility.utility import cls, citire_data, citire_nr, valideaza_interval
@@ -13,7 +13,7 @@ def afisare_calatorii(pachete):
     :return:
     """
     print("AFIȘARE PACHETE CĂLĂTORII:")
-    if type(pachete) == list:
+    if type(pachete) is list:
         for i in range(len(pachete)):
             pachet = pachete[i]
             id = pachet['id']
@@ -157,7 +157,8 @@ def UI_cautare_pachete_dest_pret(pachete):
 
 
 def UI_cautare_pachete_sfarsit(pachete):
-    sfarsit = citire_data("%d %m %Y","Data introdusă nu este validă","Introduceți data de sfărșit a călătoriei(zi luna an):" )
+    sfarsit = citire_data("%d %m %Y", "Data introdusă nu este validă",
+                          "Introduceți data de sfărșit a călătoriei(zi luna an):")
     return cautare_pachete_sfarsit(pachete, sfarsit)
 
 
@@ -242,6 +243,42 @@ def rapoarte_pachete_menu(pachete):
                 break
 
 
+def print_menu_filtrare():
+    print("Meniu Filtrare")
+    print("1. Filtrare oferte cu pret mai mare si locție diferită")
+    print("2. Filtrare oferte după lună")
+    print("Q. Back")
+
+
+def Ui_filtrare_pret_destinatie(pachete):
+    pret = citire_nr("Pret:", int, "pretul introdus nu este valid")
+    locatie = input("Locatie:").lower()
+    return filtrare_pret_destinatie(pachete, locatie, pret)
+
+
+def UI_filtrare_luna(pachete):
+    luna = citire_nr("Luna:", int, "Luna introdusă nu este validă")
+    while luna > 12:
+        luna = citire_nr("Luna:", int, "Luna introdusă nu este validă")
+    return filtrare_luna(pachete, luna)
+
+
+def filtrare_pachete_menu(pachete):
+    print_menu_filtrare()
+    while True:
+        cmd = input(":").lower()
+        match cmd:
+            case "1":
+                cls()
+                sterse = Ui_filtrare_pret_destinatie(pachete)
+                print_menu_filtrare()
+                print(f"Au fost șterse {sterse} pachete")
+            case "2":
+                cls()
+                sterse = UI_filtrare_luna(pachete)
+                print_menu_filtrare()
+                print(f"Au fost șterse {sterse} pachete")
+
 
 def main_menu(pachete):
     cls()
@@ -267,7 +304,9 @@ def main_menu(pachete):
                 rapoarte_pachete_menu(pachete)
                 print_main_menu()
             case '5':
-                pass
+                cls()
+                filtrare_pachete_menu(pachete)
+                print_main_menu()
             case '6':
                 pass
             case 'a':

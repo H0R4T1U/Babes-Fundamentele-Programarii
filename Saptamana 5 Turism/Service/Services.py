@@ -78,11 +78,17 @@ def raport_oferte_interval_cresc(pachete, inceput, sfarsit):
     :return: lista de afisat cu pachetele ordonate crescator
     """
     pachete_interval = cautare_pachete_interval(pachete, inceput, sfarsit)
-    quick_sort_pret(pachete_interval, 0, len(pachete_interval)-1)
+    quick_sort_pret(pachete_interval, 0, len(pachete_interval) - 1)
     return pachete_interval
 
 
 def raport_medie_pret_dest(pachete, destinatie):
+    """
+    Calculeaza media de pret a pachetelor dintr-o destinatie
+    :param pachete: lista pachete
+    :param destinatie: destinatia de calculat
+    :return: media aritmetica a pachetelor
+    """
     suma = 0
     nr = 0
     for pachet in pachete:
@@ -90,7 +96,8 @@ def raport_medie_pret_dest(pachete, destinatie):
             nr += 1
             suma += get_pret(pachet)
 
-    return suma/nr
+    return suma / nr
+
 
 def filtrare_pret_destinatie(pachete, destinatie, pret):
     """
@@ -102,6 +109,7 @@ def filtrare_pret_destinatie(pachete, destinatie, pret):
     """
     i = 0
     length = len(pachete)
+    len_org = length
     while i < length:
         pachet = pachete[i]
         if get_locatie(pachet) != destinatie and get_pret(pachet) > pret:
@@ -109,4 +117,31 @@ def filtrare_pret_destinatie(pachete, destinatie, pret):
             i -= 1
             length -= 1
         i += 1
+    return len_org - length
 
+
+def filtrare_luna(pachete, luna):
+    """
+    Filtrează pachetele si elimina pe cele ce conțin o lună dată
+    :param pachete: lista pachete
+    :param luna: datetime object luna ce trebuie eliminata
+    :return: nr de pachete eliminate
+    """
+    i = 0
+    length = len(pachete)
+    len_org = length
+    while i < length:
+        pachet = pachete[i]
+        data_sosire = get_data_sosire(pachet)
+        data_plecare = get_data_plecare(pachet)
+
+        if data_sosire.month <= luna <= data_plecare.month:
+            sterge_pachet(pachete, get_id(pachet))
+            i -= 1
+            length -= 1
+        elif data_sosire.year < data_plecare.year and data_sosire.month >= luna and data_plecare.month >= luna:
+            sterge_pachet(pachete, get_id(pachet))
+            i -= 1
+            length -= 1
+        i += 1
+    return len_org - length

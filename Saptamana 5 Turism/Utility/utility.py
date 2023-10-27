@@ -5,6 +5,10 @@ from Repositories.pachetCRUD import get_pret
 
 
 def cls():
+    """
+    Sterge ecranul
+    :return:
+    """
     os.system('clear' if os.name == 'posix' else 'cls')
 
 
@@ -28,6 +32,13 @@ def citire_nr(prompt, f, msg):
 
 
 def citire_data(format, msg, prompt="Introduceți data(zi luna an): "):
+    """
+    Citeste un data object
+    :param format: formatul sau
+    :param msg: mesajul de afisat in caz de eroare
+    :param prompt: mesajul din prompt input
+    :return: dataobject
+    """
     while True:
         try:
             return datetime.datetime.strptime(input(prompt), format)
@@ -36,6 +47,12 @@ def citire_data(format, msg, prompt="Introduceți data(zi luna an): "):
 
 
 def valideaza_interval(inceput, sfarsit):
+    """
+    Valideaza  un interval de timp astfel incat inceputul < sfarsit
+    :param inceput: date time object
+    :param sfarsit: date time object
+    :return:
+    """
     if inceput > sfarsit:
         raise Exception("Inceputul intervalului trebuie sa fie anterior sfarsitului acestuias")
 
@@ -44,8 +61,8 @@ def partitie(pachete, st, dr):
     """
     Partitie pentru quicks ort
     :param pachete: lista pachete
-    :param st:
-    :param dr:
+    :param st:marginea stanga pachet
+    :param dr:marginea dreapta
     :return:
     """
 
@@ -64,6 +81,13 @@ def partitie(pachete, st, dr):
 
 
 def quick_sort_pret(pachete, st, dr):
+    """
+    Functie sortare
+    :param pachete: lista pachete
+    :param st: margine stanga
+    :param dr: margine dreapta
+    :return:
+    """
     if st < dr:
         pindex = partitie(pachete, st, dr)
         quick_sort_pret(pachete, st, pindex - 1)

@@ -1,7 +1,8 @@
 import datetime
 
 from Service.Services import cautare_pachete_interval, cautare_pachete_dest_pret, cautare_pachete_sfarsit, \
-    raport_oferte_destinatie, raport_medie_pret_dest, raport_oferte_interval_cresc, filtrare_pret_destinatie
+    raport_oferte_destinatie, raport_medie_pret_dest, raport_oferte_interval_cresc, filtrare_pret_destinatie, \
+    filtrare_luna
 from Service.crud import adauga_pachet_lista, get_pachet_by_id, SERVICE_modifica_pachet, \
     stergere_pachete_destinatie, stergere_pachete_data, stergere_pachete_pret
 
@@ -192,10 +193,32 @@ def test_filtrare_pret_destinatie():
     locatie1 = "oradea"
     pret1 = 2000
     adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie1, pret1)
+
     assert(len(pachete) == 2)
-    filtrare_pret_destinatie(pachete,'beius',1500)
+    assert(filtrare_pret_destinatie(pachete, 'beius', 1500) == 1)
     assert(len(pachete) == 1)
 
+
+def test_filtrare_luna():
+    pachete = []
+    data_sosire = datetime.datetime.strptime("25 01 2023", "%d %m %Y")
+    data_plecare = datetime.datetime.strptime("25 07 2023", "%d %m %Y")
+    locatie = "beius"
+    pret = 1500
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
+
+    data_sosire1 = datetime.datetime.strptime("25 05 2023", "%d %m %Y")
+    data_plecare1 = datetime.datetime.strptime("25 02 2024", "%d %m %Y")
+    adauga_pachet_lista(pachete, data_sosire1, data_plecare1, locatie, pret)
+
+    data_sosire2 = datetime.datetime.strptime("25 04 2023", "%d %m %Y")
+    data_plecare2 = datetime.datetime.strptime("25 05 2023", "%d %m %Y")
+    adauga_pachet_lista(pachete, data_sosire2, data_plecare2, locatie, pret)
+    assert(len(pachete) == 3)
+    assert(filtrare_luna(pachete, 1) == 2)
+    assert(len(pachete) == 1)
+
+    
 def test_all_services():
     test_adauga_pachet_lista()
     test_get_pachet()
@@ -210,3 +233,4 @@ def test_all_services():
     test_raport_intreval_cresc()
     test_raport_sum_dest()
     test_filtrare_pret_destinatie()
+    test_filtrare_luna()

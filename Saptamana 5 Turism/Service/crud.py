@@ -44,6 +44,16 @@ def get_pachet_by_id(pachete, id):
 
 
 def SERVICE_modifica_pachet(pachete, id, data_sosire, data_plecare, locatie, pret):
+    """
+    Modifică un pachet existent
+    :param pachete: lista pachete
+    :param id: id pachet
+    :param data_sosire:data sosire noua
+    :param data_plecare: data plecare noua
+    :param locatie: locatia noua
+    :param pret: pret nou
+    :return: -
+    """
     try:
         pachet = get_pachet_by_id(pachete, id)
     except Exception as ex:
@@ -60,6 +70,12 @@ def SERVICE_modifica_pachet(pachete, id, data_sosire, data_plecare, locatie, pre
 
 
 def stergere_pachete_destinatie(pachete, destinatie):
+    """
+    Sterge toate pachetele dintr-o destinatie
+    :param pachete: lista pachete
+    :param destinatie: destinatia de sters
+    :return:
+    """
     length = len(pachete)
     i = 0
     while i < length:
@@ -71,6 +87,12 @@ def stergere_pachete_destinatie(pachete, destinatie):
 
 
 def stergere_pachete_data(pachete, zile):
+    """
+    Sterge toate pachetele cu o durata mai scurta decat nr de zile precizat
+    :param pachete: lista pachete
+    :param zile: nr de zile
+    :return:
+    """
     length = len(pachete)
     i = 0
     while i < length:
@@ -83,6 +105,12 @@ def stergere_pachete_data(pachete, zile):
 
 
 def stergere_pachete_pret(pachete, pret):
+    """
+    Sterge pachetelor cu pretul mai mare decat cel dat
+    :param pachete: lista pachete
+    :param pret: suma
+    :return:
+    """
     length = len(pachete)
     i = 0
     while i < length:

@@ -19,4 +19,3 @@ def Validator(pachet, pachete):
         raise Exception(msg)
     else:
         return True
-
