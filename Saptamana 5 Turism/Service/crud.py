@@ -28,7 +28,7 @@ def adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret):
         pachete.append(pachet)
 
 
-def get_pachet_by_id(pachete,id):
+def get_pachet_by_id(pachete, id):
     """
     Obtine un pachet din lista cu id-ul specificat
     :param pachete: lista pachete
@@ -48,15 +48,15 @@ def SERVICE_modifica_pachet(pachete, id, data_sosire, data_plecare, locatie, pre
         pachet = get_pachet_by_id(pachete, id)
     except Exception as ex:
         print(ex)
-
-    pachet_nou = modifica_pachet(pachet, data_sosire, data_plecare, locatie, pret)
-    try:
-        Validator(pachete,pachet_nou)
-    except Exception as ex:
-        if ex == "ID-ul există deja \n":
-            for i in range(len(pachete)):
-                if pachete[i]['id'] == pachet_nou['id']:
-                    pachete[i] = pachet_nou
+    else:
+        pachet_nou = modifica_pachet(pachet, data_sosire, data_plecare, locatie, pret)
+        try:
+            Validator(pachete, pachet_nou)
+        except Exception as ex:
+            if ex == "ID-ul există deja \n":
+                for i in range(len(pachete)):
+                    if pachete[i]['id'] == pachet_nou['id']:
+                        pachete[i] = pachet_nou
 
 
 def stergere_pachete_destinatie(pachete, destinatie):
@@ -70,7 +70,7 @@ def stergere_pachete_destinatie(pachete, destinatie):
         i += 1
 
 
-def stergere_pachete_data(pachete,zile):
+def stergere_pachete_data(pachete, zile):
     length = len(pachete)
     i = 0
     while i < length:
@@ -82,12 +82,12 @@ def stergere_pachete_data(pachete,zile):
         i += 1
 
 
-def stergere_pachete_pret(pachete,pret):
+def stergere_pachete_pret(pachete, pret):
     length = len(pachete)
     i = 0
     while i < length:
         if pachete[i]['pret'] > pret:
-            sterge_pachet(pachete,pachete[i]['id'])
+            sterge_pachet(pachete, pachete[i]['id'])
             i -= 1
             length -= 1
         i += 1

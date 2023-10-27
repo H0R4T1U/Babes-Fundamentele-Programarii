@@ -1,5 +1,8 @@
 import datetime
-from Service.crud import adauga_pachet_lista, get_pachet_by_id, SERVICE_modifica_pachet, sterge_pachet, \
+
+from Service.Services import cautare_pachete_interval, cautare_pachete_dest_pret, cautare_pachete_sfarsit, \
+    raport_oferte_destinatie, raport_medie_pret_dest, raport_oferte_interval_cresc, filtrare_pret_destinatie
+from Service.crud import adauga_pachet_lista, get_pachet_by_id, SERVICE_modifica_pachet, \
     stergere_pachete_destinatie, stergere_pachete_data, stergere_pachete_pret
 
 
@@ -9,14 +12,14 @@ def test_adauga_pachet_lista():
     data_plecare = datetime.datetime.strptime("25 05 2023", "%d %m %Y")
     locatie = "beius"
     pret = 1500
-    adauga_pachet_lista(pachete,data_sosire,data_plecare,locatie,pret)
-    assert(len(pachete) == 1 )
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
+    assert (len(pachete) == 1)
     try:
         data_plecare = datetime.datetime.strptime("25 03 2023", "%d %m %Y")
-        adauga_pachet_lista(data_sosire,data_plecare,locatie,pret)
-        assert(False)
+        adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
+        assert False
     except Exception:
-        assert(True)
+        assert True
 
 
 def test_get_pachet():
@@ -26,12 +29,12 @@ def test_get_pachet():
     locatie = "beius"
     pret = 1500
     adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
-    assert(get_pachet_by_id(pachete, 1) == pachete[0])
+    assert (get_pachet_by_id(pachete, 1) == pachete[0])
     try:
-        get_pachet_by_id(pachete,5)
-        assert(False)
+        get_pachet_by_id(pachete, 5)
+        assert False
     except Exception:
-        assert(True)
+        assert True
 
 
 def test_modifica_pachet():
@@ -41,14 +44,13 @@ def test_modifica_pachet():
     locatie = "beius"
     pret = 1500
     adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
-    SERVICE_modifica_pachet(pachete,1,data_sosire,data_plecare,"oradea",pret)
-    assert(pachete[0]['locatie'] == 'oradea')
+    SERVICE_modifica_pachet(pachete, 1, data_sosire, data_plecare, "oradea", pret)
+    assert (pachete[0]['locatie'] == 'oradea')
     try:
-        SERVICE_modifica_pachet(pachete,5,data_sosire,data_plecare,locatie,pret)
-        assert(False)
+        SERVICE_modifica_pachet(pachete, 5, data_sosire, data_plecare, locatie, pret)
+        assert False
     except Exception:
-        assert(True)
-
+        assert True
 
 
 def test_sterge_pachet_destinatie():
@@ -65,7 +67,7 @@ def test_sterge_pachet_destinatie():
     adauga_pachet_lista(pachete, data_sosire, data_plecare, 'oradea', pret)
     assert (len(pachete) == 4)
     stergere_pachete_destinatie(pachete, "beius")
-    assert(len(pachete) == 1)
+    assert (len(pachete) == 1)
 
 
 def test_sterge_pachet_zile():
@@ -80,8 +82,8 @@ def test_sterge_pachet_zile():
     adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
     adauga_pachet_lista(pachete, data_sosire, data_plecare2, locatie, pret)
     assert (len(pachete) == 3)
-    stergere_pachete_data(pachete,60)
-    assert(len(pachete) == 1)
+    stergere_pachete_data(pachete, 60)
+    assert (len(pachete) == 1)
 
 
 def test_sterge_pachet_pret():
@@ -94,9 +96,104 @@ def test_sterge_pachet_pret():
     adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
     adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
     adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
-    adauga_pachet_lista(pachete,data_sosire,data_plecare,locatie,999)
-    assert(len(pachete) == 4)
-    stergere_pachete_pret(pachete,1000)
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, 999)
+    assert (len(pachete) == 4)
+    stergere_pachete_pret(pachete, 1000)
+    assert (len(pachete) == 1)
+
+
+def test_cautare_interval():
+    pachete = []
+    data_sosire = datetime.datetime.strptime("25 04 2023", "%d %m %Y")
+    data_plecare = datetime.datetime.strptime("25 05 2023", "%d %m %Y")
+    locatie = "beius"
+    pret = 1500
+
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
+    data_sosire = datetime.datetime.strptime("25 04 2023", "%d %m %Y")
+    data_plecare = datetime.datetime.strptime("25 08 2023", "%d %m %Y")
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
+    assert (len(cautare_pachete_interval(pachete, data_sosire, data_plecare)) == 1)
+
+
+def test_cautare_dest_pret():
+    pachete = []
+    data_sosire = datetime.datetime.strptime("25 04 2023", "%d %m %Y")
+    data_plecare = datetime.datetime.strptime("25 05 2023", "%d %m %Y")
+    locatie = "beius"
+    pret = 1500
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
+    locatie1 = "oradea"
+    pret1 = 500
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie1, pret1)
+    assert (len(cautare_pachete_dest_pret(pachete, 'beius', 2000)) == 1)
+
+
+def test_cautare_sfarsit():
+    pachete = []
+    data_sosire = datetime.datetime.strptime("25 04 2023", "%d %m %Y")
+    data_plecare = datetime.datetime.strptime("25 05 2023", "%d %m %Y")
+    locatie = "beius"
+    pret = 1500
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
+    data_sosire = datetime.datetime.strptime("25 04 2023", "%d %m %Y")
+    data_plecare = datetime.datetime.strptime("25 07 2023", "%d %m %Y")
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
+    assert (len(cautare_pachete_sfarsit(pachete, data_plecare)) == 1)
+
+
+def test_raport_destinatie():
+    pachete = []
+    data_sosire = datetime.datetime.strptime("25 04 2023", "%d %m %Y")
+    data_plecare = datetime.datetime.strptime("25 05 2023", "%d %m %Y")
+    locatie = "beius"
+    pret = 1500
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
+
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, 'oradea', pret)
+    assert (raport_oferte_destinatie(pachete, 'beius') == [pachete[0]])
+
+
+def test_raport_intreval_cresc():
+    pachete = []
+    data_sosire = datetime.datetime.strptime("25 04 2023", "%d %m %Y")
+    data_plecare = datetime.datetime.strptime("25 05 2023", "%d %m %Y")
+    data_plecare2 = datetime.datetime.strptime("29 04 2023", "%d %m %Y")
+    locatie = "beius"
+    pret = 1500
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
+    adauga_pachet_lista(pachete, data_sosire, data_plecare2, locatie, 2500)
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, 1000)
+
+    pachete_interval = raport_oferte_interval_cresc(pachete, data_sosire, data_plecare)
+    assert(len(pachete_interval) == 2)
+    assert(pachete_interval[0]['id'] == 3)
+    assert(pachete_interval[1]['id'] == 1)
+
+def test_raport_sum_dest():
+    pachete = []
+    data_sosire = datetime.datetime.strptime("25 04 2023", "%d %m %Y")
+    data_plecare = datetime.datetime.strptime("25 05 2023", "%d %m %Y")
+    locatie = "beius"
+    pret = 1500
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, 2500)
+
+    assert(raport_medie_pret_dest(pachete,'beius') == 2000)
+
+
+def test_filtrare_pret_destinatie():
+    pachete = []
+    data_sosire = datetime.datetime.strptime("25 04 2023", "%d %m %Y")
+    data_plecare = datetime.datetime.strptime("25 05 2023", "%d %m %Y")
+    locatie = "beius"
+    pret = 1500
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
+    locatie1 = "oradea"
+    pret1 = 2000
+    adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie1, pret1)
+    assert(len(pachete) == 2)
+    filtrare_pret_destinatie(pachete,'beius',1500)
     assert(len(pachete) == 1)
 
 def test_all_services():
@@ -106,3 +203,10 @@ def test_all_services():
     test_sterge_pachet_destinatie()
     test_sterge_pachet_zile()
     test_sterge_pachet_pret()
+    test_cautare_interval()
+    test_cautare_dest_pret()
+    test_cautare_sfarsit()
+    test_raport_destinatie()
+    test_raport_intreval_cresc()
+    test_raport_sum_dest()
+    test_filtrare_pret_destinatie()

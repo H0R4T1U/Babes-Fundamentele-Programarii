@@ -63,11 +63,11 @@ def get_pret(pachet):
 
 def modifica_pachet(pachet, data_sosire, data_plecare, locatie, pret):
     """
-    Modifica un pachet bazat pe id
-    :param id:
+    Modifica un pachet
+    :param pachet:
     :param data_sosire:
     :param data_plecare:
-    :param locatia:
+    :param locatie:
     :param pret:
     :return:
     """
