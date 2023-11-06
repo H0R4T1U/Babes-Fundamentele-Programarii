@@ -1,5 +1,5 @@
 from Repositories.pachetCRUD import get_data_sosire, get_data_plecare, get_locatie, get_pret, sterge_pachet, get_id
-from Utility.utility import quick_sort_pret
+from Utility.utility import quick_sort_pret, add_to_undo
 
 
 def cautare_pachete_interval(pachete, inceput, sfarsit):
@@ -99,14 +99,16 @@ def raport_medie_pret_dest(pachete, destinatie):
     return suma / nr
 
 
-def filtrare_pret_destinatie(pachete, destinatie, pret):
+def filtrare_pret_destinatie(pachete, destinatie, pret, undo_list=None):
     """
     Elimina ofertele ce au un pret mai mare decat cel dat si o destinatie diferita
     :param pachete: lista pachete
     :param destinatie:destinatia data
     :param pret: pret
+    :param undo_list: lista cu modificarile anterioare
     :return: Nr de pachete eliminate
     """
+    add_to_undo(pachete, undo_list)
     i = 0
     length = len(pachete)
     len_org = length
@@ -120,14 +122,16 @@ def filtrare_pret_destinatie(pachete, destinatie, pret):
     return len_org - length
 
 
-def filtrare_luna(pachete, luna):
+def filtrare_luna(pachete, luna, undo_list=None):
     """
     Filtrează pachetele si elimina pe cele ce conțin o lună dată
     :param pachete: lista pachete
     :param luna: datetime object luna ce trebuie eliminata
+    :param undo_list: lista cu modificarile anterioare
     :return: nr de pachete eliminate
     """
     i = 0
+    add_to_undo(pachete, undo_list)
     length = len(pachete)
     len_org = length
     while i < length:
@@ -145,3 +149,23 @@ def filtrare_luna(pachete, luna):
             length -= 1
         i += 1
     return len_org - length
+
+
+def undo(pachete, undo_list):
+    """
+    returnează pachetul dinainte ultimei mdoficari
+    :param pachete: lista pachete
+    :param undo_list: lista cu modificari
+    :return: lista pachete inainte de modificari
+    """
+
+    if len(undo_list):
+        pachete = undo_list.pop()
+        return pachete
+
+    else:
+        print("Nu mai există nici-un element în undo!")
+        return pachete
+
+
+

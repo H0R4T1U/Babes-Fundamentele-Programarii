@@ -1,8 +1,9 @@
+from Utility.utility import add_to_undo
 from Validator.validator import validator
 from Repositories.pachetCRUD import *
 
 
-def adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret):
+def adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret, undo_list=None):
     """
     Adauga un pachet in lista de pachete
     :param pachete: lista de pachete
@@ -25,6 +26,7 @@ def adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret):
     except Exception as ex:
         print(ex)
     else:
+        add_to_undo(pachete, undo_list)
         pachete.append(pachet)
 
 
@@ -43,7 +45,7 @@ def get_pachet_by_id(pachete, id):
                 return i
 
 
-def SERVICE_modifica_pachet(pachete, id, data_sosire, data_plecare, locatie, pret):
+def SERVICE_modifica_pachet(pachete, id, data_sosire, data_plecare, locatie, pret, undo_list=None):
     """
     Modifică un pachet existent
     :param pachete: lista pachete
@@ -52,6 +54,7 @@ def SERVICE_modifica_pachet(pachete, id, data_sosire, data_plecare, locatie, pre
     :param data_plecare: data plecare noua
     :param locatie: locatia noua
     :param pret: pret nou
+    :param undo_list: lista cu modificarile anterioare
     :return: -
     """
     try:
@@ -66,16 +69,19 @@ def SERVICE_modifica_pachet(pachete, id, data_sosire, data_plecare, locatie, pre
             if ex == "ID-ul există deja \n":
                 for i in range(len(pachete)):
                     if get_id(pachete[i]) == get_id(pachet_nou):
+                        add_to_undo(pachete, undo_list)
                         pachete[i] = pachet_nou
 
 
-def stergere_pachete_destinatie(pachete, destinatie):
+def stergere_pachete_destinatie(pachete, destinatie, undo_list=None):
     """
     Sterge toate pachetele dintr-o destinatie
     :param pachete: lista pachete
     :param destinatie: destinatia de sters
+    :param undo_list: lista cu modificarile anterioare
     :return:
     """
+    add_to_undo(pachete, undo_list)
     length = len(pachete)
     i = 0
     while i < length:
@@ -86,13 +92,15 @@ def stergere_pachete_destinatie(pachete, destinatie):
         i += 1
 
 
-def stergere_pachete_data(pachete, zile):
+def stergere_pachete_data(pachete, zile, undo_list=None):
     """
     Sterge toate pachetele cu o durata mai scurta decat nr de zile precizat
     :param pachete: lista pachete
     :param zile: nr de zile
+    :param undo_list: lista cu modificarile anterioare
     :return:
     """
+    add_to_undo(pachete, undo_list)
     length = len(pachete)
     i = 0
     while i < length:
@@ -104,13 +112,15 @@ def stergere_pachete_data(pachete, zile):
         i += 1
 
 
-def stergere_pachete_pret(pachete, pret):
+def stergere_pachete_pret(pachete, pret, undo_list=None ):
     """
     Sterge pachetelor cu pretul mai mare decat cel dat
     :param pachete: lista pachete
     :param pret: suma
+    :param undo_list: lista cu modificarile anterioare
     :return:
     """
+    add_to_undo(pachete, undo_list)
     length = len(pachete)
     i = 0
     while i < length:

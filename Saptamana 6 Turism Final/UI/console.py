@@ -1,3 +1,4 @@
+from Service.Services import undo
 from UI.meniu_adaugari import adaugare_pachet_menu
 from UI.meniu_cautari import cautare_pachet_menu
 from UI.meniu_filtrare import filtrare_pachete_menu
@@ -18,7 +19,7 @@ def print_main_menu():
     print("Q. Exit")
 
 
-def main_menu(pachete):
+def main_menu(pachete,undo_list):
     cls()
     print_main_menu()
     while True:
@@ -27,11 +28,11 @@ def main_menu(pachete):
         match cmd:
             case '1':
                 cls()
-                adaugare_pachet_menu(pachete)
+                adaugare_pachet_menu(pachete, undo_list)
                 print_main_menu()
             case '2':
                 cls()
-                stergere_pachet_menu(pachete)
+                stergere_pachet_menu(pachete, undo_list)
                 print_main_menu()
             case '3':
                 cls()
@@ -43,10 +44,13 @@ def main_menu(pachete):
                 print_main_menu()
             case '5':
                 cls()
-                filtrare_pachete_menu(pachete)
+                filtrare_pachete_menu(pachete, undo_list)
                 print_main_menu()
             case '6':
-                pass
+                pachete = undo(pachete, undo_list)
+                cls()
+                print_main_menu()
+                afisare_calatorii(pachete)
             case 'a':
                 cls()
                 print_main_menu()

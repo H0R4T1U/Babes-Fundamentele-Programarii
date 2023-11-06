@@ -111,3 +111,8 @@ def afisare_calatorii(pachete):
             print(f"{id}. Perioada de la: {sosire} pana la: {plecare} cu destinația {locatie} în Valoare de {pret} RON")
     else:
         print("Nu există Pachete de afișat ")
+
+
+def add_to_undo(pachete, undo_list):
+    if undo_list is not None:
+        undo_list.append(pachete[:])

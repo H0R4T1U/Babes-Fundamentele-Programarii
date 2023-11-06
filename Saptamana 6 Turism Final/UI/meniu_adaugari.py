@@ -8,18 +8,18 @@ def print_adaugare_pachet_menu():
     print("Q. Ieșire")
 
 
-def ui_adaugare_pachet(pachete):
+def ui_adaugare_pachet(pachete, undo_list):
     data_sosire = citire_data("%d %m %Y", "Ati introdus o data invalida.", "Introduceți data de sosire(zi luna an): ")
     data_plecare = citire_data("%d %m %Y", "Ati introdus o data invalida", "Introduceți data de plecare(zi luna an): ")
     locatie = input("Locatie:").lower()
     pret = citire_nr("Introduce-ți pretul pachetului:", int, "Număr invalid")
     try:
-        adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret)
+        adauga_pachet_lista(pachete, data_sosire, data_plecare, locatie, pret, undo_list)
     except Exception as ex:
         print(ex)
 
 
-def ui_modificare_pachet(pachete):
+def ui_modificare_pachet(pachete, undo_list):
     id = citire_nr("ID:", int, "Id-ul trebuie sa fie un numar intreg")
     data_sosire = citire_data("%d %m %Y", "Ati introdus o data invalida",
                               "Introduceți noua data de sosire(zi luna an):")
@@ -27,10 +27,10 @@ def ui_modificare_pachet(pachete):
                                "Introduceți noua data de plecare(zi luna an):")
     locatie = input("Locatia noua:").lower()
     pret = citire_nr("Pretul nou:", int, "Pretul trebuie sa fie un numar intreg")
-    SERVICE_modifica_pachet(pachete, id, data_sosire, data_plecare, locatie, pret)
+    SERVICE_modifica_pachet(pachete, id, data_sosire, data_plecare, locatie, pret, undo_list)
 
 
-def adaugare_pachet_menu(pachete):
+def adaugare_pachet_menu(pachete, undo_list):
     cls()
     while True:
         print_adaugare_pachet_menu()
@@ -39,11 +39,11 @@ def adaugare_pachet_menu(pachete):
             case '1':
                 cls()
                 # SERVICE ADAUGARE
-                ui_adaugare_pachet(pachete)
+                ui_adaugare_pachet(pachete, undo_list)
             case '2':
                 cls()
                 # Service Modificare
-                ui_modificare_pachet(pachete)
+                ui_modificare_pachet(pachete, undo_list)
                 pass
             case 'q':
                 break
