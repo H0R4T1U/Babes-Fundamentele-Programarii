@@ -166,6 +166,3 @@ def undo(pachete, undo_list):
     else:
         print("Nu mai există nici-un element în undo!")
         return pachete
-
-
-
