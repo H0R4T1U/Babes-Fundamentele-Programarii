@@ -1,4 +1,4 @@
-from Domain.Student import get_grupa, get_id, get_nume
+from Domain.Student import Student
 
 
 def valideaza_student(student, studenti):
@@ -9,15 +9,15 @@ def valideaza_student(student, studenti):
     :return:
     """
     msg = ""
-    if get_id(student) in [get_id(stud) for stud in studenti]:
+    if student.id in [stud.id for stud in studenti]:
         msg += "Id-ul exista deja!\n"
-    if get_nume(student) == "":
+    if student.nume == "":
         msg += "Numele nu poate fi vid!\n"
-    if get_grupa(student) < 0:
+    if student.grupa < 0:
         msg += "Grupa nu poate fi negativa!\n"
-    if get_grupa(student) > 999:
+    if student.grupa > 999:
         msg += "Grupa nu poate fi mai mare decat 999!\n"
-    if get_grupa(student) == 0:
+    if student.grupa == 0:
         msg += "Grupa nu poate fi 0!\n"
     if msg != "":
         raise ValueError(msg)

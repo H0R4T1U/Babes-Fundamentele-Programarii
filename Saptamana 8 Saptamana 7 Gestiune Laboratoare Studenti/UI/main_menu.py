@@ -40,14 +40,14 @@ def modify_student_ui(studenti):
 def add_lab_ui(laboratoare):
     nr_lab = read_number("Numar laborator:", int, "Numarul laboratorului trebuie sa fie un numar intreg")
     descriere = input("Descriere:")
-    deadline = read_date("Deadline:", "%d %m %Y", "Deadline invalid!")
+    deadline = read_date("Deadline(zi luna an):", "%d %m %Y", "Deadline invalid!")
     add_lab(laboratoare, nr_lab, descriere, deadline)
 
 
 def modify_lab_ui(laboratoare):
     nr_lab = read_number("Numar laborator:", int, "Numarul laboratorului trebuie sa fie un numar intreg")
     descriere = input("Descriere noua:")
-    deadline = read_date("Deadline nou:","%d %m %Y", "Deadline invalid!")
+    deadline = read_date("Deadline nou(zi luna an):","%d %m %Y", "Deadline invalid!")
 
     if modify_lab(laboratoare, nr_lab, descriere, deadline):
         print("Laborator modificat cu succes!")
