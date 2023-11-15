@@ -1,4 +1,4 @@
-from Domain.Laborator import create_lab, delete_lab_id, get_lab_by_id, get_descriere, get_deadline, get_nr_lab
+from Domain.Laborator import Laborator
 from Domain.Student import Student
 from Domain.lab_validator import validate_lab
 from Domain.student_validator import valideaza_student
@@ -75,7 +75,7 @@ def add_lab(laboratoare, nr_lab, descriere, deadline):
     :param deadline:
     :return:
     """
-    lab = create_lab(nr_lab, descriere, deadline)
+    lab = Laborator(nr_lab, descriere, deadline)
     try:
         if validate_lab(lab, laboratoare):
             laboratoare.append(lab)
@@ -110,17 +110,17 @@ def modify_lab(laboratoare, id, descriere_noua, deadline_nou):
         return False
     else:
         if descriere_noua == "":
-            descriere_noua = get_descriere(lab)
+            descriere_noua = lab.descriere
         if deadline_nou == "":
-            deadline_nou = get_deadline(lab)
+            deadline_nou = lab.deadline
 
-        lab_nou = create_lab(id, descriere_noua, deadline_nou)
+        lab_nou = Laborator(id, descriere_noua, deadline_nou)
         try:
             validate_lab(lab_nou, laboratoare)
         except ValueError as ve:
             if str(ve) == "Laboratorul exista deja!\n":
                 for i in range(len(laboratoare)):
-                    if get_nr_lab(laboratoare[i]) == id:
+                    if laboratoare[i].id == id:
                         laboratoare[i] = lab_nou
                         return True
             else:
@@ -148,3 +148,35 @@ def get_student_by_id(studenti, id):
             return student
 
     raise Exception("Nu exista student cu id-ul dat!")
+
+def delete_lab_id(laboratoare, id):
+    '''
+    Functia sterge un laborator din lista de laboratoare
+    :param laboratoare: lista de laboratoare
+    :param id: id-ul laboratorului de sters
+    :return: -
+    '''
+    to_delete = []
+    for i in range(len(laboratoare)):
+        if laboratoare[i].id == id:
+            del laboratoare[i]
+            return True
+    return False
+
+def get_lab_by_id(laboratoare,id):
+    """
+    Functia returneaza laboratorul cu id-ul dat
+    :param laboratoare:
+    :param id:
+    :return:
+    """
+    for lab in laboratoare:
+        if lab.id == id:
+            return lab
+    raise Exception("Nu exista nici un student cu id-ul dat!")
+
+def get_student_by_name(studenti, nume_student):
+    for student in studenti:
+        if student.nume == nume_student:
+            return student
+    raise Exception("Nu exista nici un student cu numele dat!")

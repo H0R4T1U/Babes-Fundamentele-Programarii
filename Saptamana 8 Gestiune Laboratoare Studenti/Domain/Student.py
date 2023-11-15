@@ -43,4 +43,6 @@ class Student:
     def note(self,note_noi):
         self.__note = note_noi
 
+    def __str__(self):
+        return f"{self.id}. {self.nume} grupa {self.grupa}"
 

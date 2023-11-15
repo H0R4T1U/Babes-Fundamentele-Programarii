@@ -1,7 +1,6 @@
 import datetime
 
-from Domain.Laborator import create_lab, get_nr_lab, get_descriere, get_deadline, set_deadline, set_descriere, \
-    set_nr_lab, delete_lab_id
+from Domain.Laborator import Laborator
 from Domain.Student import Student
 
 
@@ -10,10 +9,10 @@ def test_creaza_lab():
     Functia testeaza creeaza_lab
     :return:
     """
-    lab = create_lab(1, 'descriere', 'deadline')
-    assert (get_nr_lab(lab) == 1)
-    assert (get_descriere(lab) == 'descriere')
-    assert (get_deadline(lab) == 'deadline')
+    lab = Laborator(1, 'descriere', 'deadline')
+    assert (lab.id == 1)
+    assert (lab.descriere == 'descriere')
+    assert (lab.deadline == 'deadline')
 
 
 def test_lab_seters():
@@ -21,13 +20,13 @@ def test_lab_seters():
     Functia testeaza set_deadline si set_descriere
     :return:
     """
-    lab = create_lab(1, 'descriere', 'deadline')
-    set_deadline(lab, 'new_deadline')
-    set_descriere(lab, 'new_descriere')
-    set_nr_lab(lab, 2)
-    assert (get_deadline(lab) == 'new_deadline')
-    assert (get_descriere(lab) == 'new_descriere')
-    assert (get_nr_lab(lab) == 2)
+    lab = Laborator(1, 'descriere', 'deadline')
+    lab.deadline = 'new_deadline'
+    lab.descriere = 'new_descriere'
+    lab.id = 2
+    assert (lab.deadline == 'new_deadline')
+    assert (lab.descriere == 'new_descriere')
+    assert (lab.id == 2)
 
 
 def test_create_student():
@@ -58,20 +57,6 @@ def test_student_seters():
     assert (student.grupa == 3)
 
 
-
-
-
-def test_delete_lab_by_id():
-    """
-    Functia testeaza delete_lab_by_id
-    :return:
-    """
-    laboratoare = []
-    lab = create_lab(1, 'descriere', datetime.datetime.strptime("25 10 2023", '%d %m %Y'))
-    laboratoare.append(lab)
-    assert (delete_lab_id(laboratoare, 1) == True)
-    assert (delete_lab_id(laboratoare, 1) == False)
-
 def test_all_domain():
     """
     Functia testeaza toate functiile din domeniu
@@ -81,4 +66,3 @@ def test_all_domain():
     test_lab_seters()
     test_create_student()
     test_student_seters()
-    test_delete_lab_by_id()
