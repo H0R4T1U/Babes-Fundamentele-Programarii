@@ -7,18 +7,19 @@ from Domain.student_validator import valideaza_student
 def add_student(studenti, nume, grupa):
     """
     Functia adauga un student in lista de studenti
-    :param studenti:
-    :param nume:
-    :param grupa:
-    :return:
+    :param studenti:lista studenti
+    :param nume:nume student
+    :param grupa:grupa student
+    :return:Adauga student la lista sau Raise ValueError
     """
     id = len(studenti) + 1
     student = Student(id, nume, grupa)
-
-    if valideaza_student(student, studenti):
+    try:
+        valideaza_student(student, studenti)
+    except ValueError as ve:
+        raise ValueError(str(ve)+"Studentul nu a fost adăugat!\n")
+    else:
         studenti.append(student)
-        return True
-    return False
 
 
 def delete_student(studenti, id):
@@ -34,17 +35,16 @@ def delete_student(studenti, id):
 def modify_student(studenti, id, nume_nou, grupa_noua):
     """
     Functia modifica un student
-    :param studenti:
-    :param id:
-    :param nume_nou:
-    :param grupa_noua:
-    :return:
+    :param studenti:Lista studenti
+    :param id: id student de modificat
+    :param nume_nou: nume nou student
+    :param grupa_noua: grupa noua student
+    :return:Modifica studentul sau Raise Exception/Value Error
     """
     try:
         student = get_student_by_id(studenti, id)
     except Exception as ex:
-        print(ex)
-        return False
+        raise Exception(str(ex)+"Studentul nu a fost modificat\n")
     else:
         if nume_nou == "":
             nume_nou = student.nume
@@ -61,30 +61,27 @@ def modify_student(studenti, id, nume_nou, grupa_noua):
                         studenti[i] = student_nou
                         return True
             else:
-                print(ve)
-                return False
-
+                raise ValueError(str(ve)+"Studentul nu a fost modificat!\n")
 
 
 def add_lab(laboratoare, nr_lab, descriere, deadline):
     """
     Functia adauga un laborator in lista de laboratoare
-    :param laboratoare:
-    :param nr_lab:
-    :param descriere:
-    :param deadline:
-    :return:
+    :param laboratoare:Lista laboratoare
+    :param nr_lab:lab de adăugat
+    :param descriere:Descriere Lab
+    :param deadline:deadline laborator
+    :return:Adauga laborator la lista sau ValueError
     """
     lab = Laborator(nr_lab, descriere, deadline)
     try:
-        if validate_lab(lab, laboratoare):
-            laboratoare.append(lab)
-            return True
+       validate_lab(lab, laboratoare)
     except ValueError as ve:
-        print(ve)
-        return False
+        raise ValueError(str(ve)+"Laboratorul nu a fost Adăugat!\n")
+    else:
+        laboratoare.append(lab)
 
-def delete_lab(laboratoare,id):
+def delete_lab(laboratoare, id):
     """
     Functia sterge un laborator din lista de laboratoare
     :param laboratoare:
@@ -106,8 +103,7 @@ def modify_lab(laboratoare, id, descriere_noua, deadline_nou):
     try:
         lab = get_lab_by_id(laboratoare, id)
     except Exception as ex:
-        print(ex)
-        return False
+        raise Exception(str(ex) + "Laboratorul nu a fost modificat!\n")
     else:
         if descriere_noua == "":
             descriere_noua = lab.descriere
@@ -124,9 +120,7 @@ def modify_lab(laboratoare, id, descriere_noua, deadline_nou):
                         laboratoare[i] = lab_nou
                         return True
             else:
-                print(ve)
-                return False
-
+                raise ValueError(str(ve)+"Laboratorul nu a fost modificat!\n")
 
 def delete_student_id(studenti, id):
     """
@@ -147,7 +141,8 @@ def get_student_by_id(studenti, id):
         if student.id == id:
             return student
 
-    raise Exception("Nu exista student cu id-ul dat!")
+    raise Exception("Nu exista student cu id-ul dat!\n")
+
 
 def delete_lab_id(laboratoare, id):
     '''
@@ -163,7 +158,8 @@ def delete_lab_id(laboratoare, id):
             return True
     return False
 
-def get_lab_by_id(laboratoare,id):
+
+def get_lab_by_id(laboratoare, id):
     """
     Functia returneaza laboratorul cu id-ul dat
     :param laboratoare:
@@ -173,10 +169,11 @@ def get_lab_by_id(laboratoare,id):
     for lab in laboratoare:
         if lab.id == id:
             return lab
-    raise Exception("Nu exista nici un student cu id-ul dat!")
+    raise Exception("Nu exista nici un student cu id-ul dat!\n")
+
 
 def get_student_by_name(studenti, nume_student):
     for student in studenti:
         if student.nume == nume_student:
             return student
-    raise Exception("Nu exista nici un student cu numele dat!")
+    raise Exception("Nu exista nici un student cu numele dat!\n")

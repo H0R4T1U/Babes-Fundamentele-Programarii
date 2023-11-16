@@ -30,3 +30,4 @@ class Laborator:
 
     def __str__(self):
         return f"{self.id}. {self.descriere}, {self.deadline.day}.{self.deadline.month}.{self.deadline.year}"
+

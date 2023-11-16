@@ -1,6 +1,3 @@
-import datetime
-
-
 
 
 def validate_lab(laborator, laboratoare):
