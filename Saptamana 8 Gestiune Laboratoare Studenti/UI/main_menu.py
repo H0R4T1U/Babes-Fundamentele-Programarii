@@ -1,6 +1,7 @@
 from Controller.asign_controller import assign_lab, assign_nota
 from Controller.crud import add_student, modify_student, delete_student, add_lab, modify_lab, delete_lab
 from Controller.functionalitati_controller import cauta_student, cauta_laborator, stat_stud_lab, stat_stud_medie_5
+from Repository.file_repository import create_x_labs, create_x_students
 from Utility.utility import read_number, cls, read_date
 from Views.app_view import print_all_students, print_all_labs, afiseaza_note_studenti, afiseaza_stud_corigenti
 
@@ -10,6 +11,7 @@ def print_main_menu():
     print("2. Meniu Ștergeri")
     print("3. Meniu Căutări")
     print("4. Meniu Statistici")
+    print("X. Crează X studenti și laboratoare")
     print("A. Afiseaza studenti")
     print("Q. Exit")
 
@@ -322,6 +324,21 @@ def statistici_menu(studenti):
                 print("Comanda invalidă!")
 
 
+def create_x_students_ui(studenti, laboratoare):
+
+    nr_lab = read_number("Nr laboratoare:",int,"Nr de laboratore trebuie sa fie nr intreg!")
+    while nr_lab <= 0:
+        print("Nr de laboratoare trebuie sa fie un numar pozitiv mai mare ca 0!")
+        nr_lab = read_number("Nr laboratoare:", int, "Nr de laboratore trebuie sa fie nr intreg!")
+
+    nr_stud = read_number("Nr studenti:",int,'Nr de studenti trebuie sa fie nr intreg!')
+    while nr_stud <= 0:
+        print("Nr de studenti trebuie sa fie un numar pozitiv mai mare ca 0!")
+        nr_stud = read_number("Nr studenti:", int, 'Nr de studenti trebuie sa fie nr intreg!')
+    create_x_labs(nr_lab,laboratoare)
+    create_x_students(nr_stud,studenti,laboratoare)
+
+
 def main_menu(studenti, laboratoare):
     cls()
     print_main_menu()
@@ -349,6 +366,10 @@ def main_menu(studenti, laboratoare):
                 cls()
                 print_all_students(studenti)
                 print_all_labs(laboratoare)
+                print_main_menu()
+            case 'x':
+                cls()
+                create_x_students_ui(studenti,laboratoare)
                 print_main_menu()
             case 'q':
                 exit(0)
