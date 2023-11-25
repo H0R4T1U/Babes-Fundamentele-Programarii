@@ -103,7 +103,7 @@ def assign_stud_lab_ui(studenti, laboratoare):
     print("1. Caută după nume")
     print("2. Caută dupa ID")
     while True:
-        cmd = input(':')
+        cmd = input(':').lower()
         match cmd:
             case '1':
                 nume = input("Nume Student:")
@@ -128,7 +128,7 @@ def assign_nota_lab_ui(studenti, laboratoare):
     print("1. Caută după nume")
     print("2. Caută dupa ID")
     while True:
-        cmd = input(':')
+        cmd = input(':').lower()
         match cmd:
             case '1':
                 nume = input("Nume Student:")
@@ -152,7 +152,7 @@ def add_menu(studenti, laboratoare):
     cls()
     print_add_menu()
     while True:
-        cmd = input("Comanda:")
+        cmd = input("Comanda:").lower()
         match cmd:
             case '1':
                 cls()
@@ -219,7 +219,7 @@ def delete_menu(studenti, laboratoare):
     cls()
     print_delete_menu()
     while True:
-        cmd = input("Comanda:")
+        cmd = input("Comanda:").lower()
         match cmd:
             case '1':
                 cls()
@@ -244,7 +244,7 @@ def cautare_student_ui(studenti):
     print("1. Caută după Nume")
     print("2. Caută dupa ID")
     while True:
-        cmd = input(':')
+        cmd = input('Comanda:').lower()
         match cmd:
             case '1':
                 nume = input("Nume Student:")
@@ -271,7 +271,7 @@ def cautare_laborator_ui(laboratoare):
 def cautare_menu(studenti, laboratoare):
     print_cautare_menu()
     while True:
-        cmd = input(":").lower()
+        cmd = input("Comanda:").lower()
         match cmd:
             case '1':
                 cls()
@@ -308,7 +308,7 @@ def stat_stud_medie_5_ui(studenti):
 def statistici_menu(studenti):
     print_statistici_menu()
     while True:
-        cmd = input(":")
+        cmd = input("Comanda:").lower()
         match cmd:
             case '1':
                 cls()
@@ -343,7 +343,7 @@ def main_menu(studenti, laboratoare):
     cls()
     print_main_menu()
     while True:
-        cmd = input("Comanda:")
+        cmd = input("Comanda:").lower()
 
         match cmd:
             case '1':

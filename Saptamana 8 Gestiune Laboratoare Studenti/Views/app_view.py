@@ -19,6 +19,7 @@ def afiseaza_note_studenti(studenti, id):
         print(f'{stud.nume}, {stud.note[ind]}')
     print("-=" * 50)
 
+
 def afiseaza_stud_corigenti(studenti):
     print("-=" * 50)
     for stud in studenti:
