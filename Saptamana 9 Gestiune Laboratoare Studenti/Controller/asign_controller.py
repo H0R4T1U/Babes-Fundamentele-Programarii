@@ -37,7 +37,7 @@ def assign_nota(studenti, laboratoare, lab_id, nota, student_name=None, student_
             stud.note[-1] = nota
 
 
-def __valideaza_date(studenti, laboratoare, lab_id, student_name=None, student_id=None,nota=None):
+def __valideaza_date(studenti, laboratoare, lab_id, student_name=None, student_id=None, nota=None):
     """
     verifica datele introduse si returneaza studentul
     :param studenti:

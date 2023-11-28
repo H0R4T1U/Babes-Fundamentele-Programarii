@@ -3,7 +3,8 @@ import datetime
 from Controller.asign_controller import assign_lab, assign_nota
 from Controller.crud import add_student, add_lab
 from Controller.functionalitati_controller import cauta_student, cauta_laborator, swap_studenti, sort_studenti_nota, \
-    sort_studenti_nume, stat_stud_lab, stat_stud_medie_5
+    sort_studenti_nume, stat_stud_lab, stat_stud_medie_5, stat_stud_lab_10
+from Repository.file_repository import create_x_labs, create_x_students
 
 
 def test_cauta_student():
@@ -26,25 +27,27 @@ def test_cauta_student():
 
 
 def test_cauta_laborator():
-    deadline = datetime.datetime.strptime('25 12 2023','%d %m %Y')
+    deadline = datetime.datetime.strptime('25 12 2023', '%d %m %Y')
     laboratoare = []
-    add_lab(laboratoare,1,'FP',deadline)
-    add_lab(laboratoare, 2,'FP2',deadline)
-    add_lab(laboratoare, 3,"FP3", deadline)
-    assert cauta_laborator(laboratoare,2) == laboratoare[1]
+    add_lab(laboratoare, 1, 'FP', deadline)
+    add_lab(laboratoare, 2, 'FP2', deadline)
+    add_lab(laboratoare, 3, "FP3", deadline)
+    assert cauta_laborator(laboratoare, 2) == laboratoare[1]
     try:
-        cauta_laborator(laboratoare,5)
+        cauta_laborator(laboratoare, 5)
         assert False
-    except Exception :
+    except Exception:
         assert True
+
 
 def test_swap_studenti():
     studenti = []
-    add_student(studenti,'h',211)
-    add_student(studenti,'b',211)
-    studenti = swap_studenti(studenti,0,1)
+    add_student(studenti, 'h', 211)
+    add_student(studenti, 'b', 211)
+    studenti = swap_studenti(studenti, 0, 1)
     assert studenti[0].nume == 'b'
     assert studenti[1].nume == 'h'
+
 
 def test_sortari():
     studenti = []
@@ -52,25 +55,26 @@ def test_sortari():
     add_student(studenti, 'h', 211)
     add_student(studenti, 'd', 211)
     add_student(studenti, 'b', 211)
-    add_lab(laboratoare,1,'asdf',datetime.datetime.strptime('25 10 2023','%d %m %Y'))
+    add_lab(laboratoare, 1, 'asdf', datetime.datetime.strptime('25 10 2023', '%d %m %Y'))
     assert studenti[1].nume == 'd'
     assert studenti[0].nume == 'h'
     assert studenti[2].nume == 'b'
-    assign_lab(studenti,laboratoare,1,None,1)
-    assign_lab(studenti,laboratoare,1,None,2)
+    assign_lab(studenti, laboratoare, 1, None, 1)
+    assign_lab(studenti, laboratoare, 1, None, 2)
     assign_lab(studenti, laboratoare, 1, None, 3)
 
-    assign_nota(studenti,laboratoare,1,9,None,1)
-    assign_nota(studenti,laboratoare,1,10,None,2)
+    assign_nota(studenti, laboratoare, 1, 9, None, 1)
+    assign_nota(studenti, laboratoare, 1, 10, None, 2)
     assign_nota(studenti, laboratoare, 1, 10, None, 3)
-    studenti = sort_studenti_nota(studenti,1)
+    studenti = sort_studenti_nota(studenti, 1)
     assert studenti[0].nume == 'd'
     assert studenti[1].nume == 'b'
     assert studenti[2].nume == 'h'
-    studenti = sort_studenti_nume(studenti,1)
+    studenti = sort_studenti_nume(studenti, 1)
     assert studenti[0].nume == 'b'
     assert studenti[1].nume == 'd'
     assert studenti[2].nume == 'h'
+
 
 def test_stat_stud_lab():
     studenti = []
@@ -89,11 +93,12 @@ def test_stat_stud_lab():
     assign_nota(studenti, laboratoare, 1, 10, None, 2)
     assign_nota(studenti, laboratoare, 1, 10, None, 4)
     assert len(studenti) == 4
-    studenti_lab = stat_stud_lab(studenti,1)
+    studenti_lab = stat_stud_lab(studenti, 1)
     assert len(studenti_lab) == 3
 
     assert studenti_lab[0].note[0] >= studenti_lab[1].note[0] and studenti_lab[0].note[0] > studenti_lab[2].note[0]
     assert studenti_lab[0].nume < studenti_lab[1].nume
+
 
 def test_stat_stud_medie_5():
     studenti = []
@@ -130,6 +135,17 @@ def test_stat_stud_medie_5():
     assert corigenti[1].nume == 'd'
     assert corigenti[1].medie_note() == 4
 
+
+def test_stat_stud_lab_10():
+    studenti = []
+    laboratoare = []
+    create_x_labs(1, laboratoare)
+    create_x_students(100, studenti, laboratoare)
+    stud_lab = stat_stud_lab_10(studenti, 1)
+    assert len(stud_lab) == 10
+    assert stud_lab[0].nume < stud_lab[1].nume
+
+
 def test_func_controller():
     test_cauta_student()
     test_cauta_laborator()
@@ -137,3 +153,4 @@ def test_func_controller():
     test_sortari()
     test_stat_stud_lab()
     test_stat_stud_medie_5()
+    test_stat_stud_lab_10()

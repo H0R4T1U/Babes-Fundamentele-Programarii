@@ -34,15 +34,18 @@ def create_x_students(x, studenti, laboratoare):
         grupa = create_random_number(1, 999)
         add_student(studenti, nume, grupa)
         for j in range(1,len(laboratoare) + 1):
-            nota = random.randrange(1, 10)
-            assign_lab(studenti, laboratoare, j, None, i)
-            assign_nota(studenti, laboratoare, j, nota, None, i)
+            nota = random.randrange(1, 11)
+            try:
+                assign_lab(studenti, laboratoare, j, None, i)
+                assign_nota(studenti, laboratoare, j, nota, None, i)
+            except Exception as ex:
+                continue
 
 
 def create_x_labs(x, laboratoare):
     start = datetime.datetime.strptime('1 1 2023', '%d %m %Y')
     stop = datetime.datetime.strptime('31 12 2024', '%d %m %Y')
-    for i in range(1, x + 1):
+    for i in range(len(laboratoare) +1, x + 1):
         descriere = create_random_string(7)
         data = random_date(start, stop)
         add_lab(laboratoare, i, descriere, data)

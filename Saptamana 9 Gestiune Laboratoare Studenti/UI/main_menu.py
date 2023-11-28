@@ -1,6 +1,7 @@
 from Controller.asign_controller import assign_lab, assign_nota
 from Controller.crud import add_student, modify_student, delete_student, add_lab, modify_lab, delete_lab
-from Controller.functionalitati_controller import cauta_student, cauta_laborator, stat_stud_lab, stat_stud_medie_5
+from Controller.functionalitati_controller import cauta_student, cauta_laborator, stat_stud_lab, stat_stud_medie_5, \
+    stat_stud_lab_10
 from Repository.file_repository import create_x_labs, create_x_students
 from Utility.utility import read_number, cls, read_date
 from Views.app_view import print_all_students, print_all_labs, afiseaza_note_studenti, afiseaza_stud_corigenti
@@ -41,6 +42,7 @@ def print_cautare_menu():
 def print_statistici_menu():
     print("1. Note studenti laborator")
     print("2. Studenti Corigenti")
+    print("3. Note Studenti Laborator 10%")
     print("q. Back")
 
 
@@ -305,6 +307,15 @@ def stat_stud_medie_5_ui(studenti):
         print(ex)
 
 
+def stat_stud_lab_10_ui(studenti):
+    id = read_number("Nr lab:", int, 'id-ul laboratorului trebuie sa fie întreg')
+    try:
+        studenti = stat_stud_lab_10(studenti, id)
+        afiseaza_note_studenti(studenti, id)
+    except Exception as ex:
+        print(ex)
+
+
 def statistici_menu(studenti):
     print_statistici_menu()
     while True:
@@ -317,6 +328,10 @@ def statistici_menu(studenti):
             case '2':
                 cls()
                 stat_stud_medie_5_ui(studenti)
+                print_statistici_menu()
+            case '3':
+                cls()
+                stat_stud_lab_10_ui(studenti)
                 print_statistici_menu()
             case 'q':
                 break

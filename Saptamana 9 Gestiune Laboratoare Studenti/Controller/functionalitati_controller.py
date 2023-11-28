@@ -81,11 +81,12 @@ def sort_studenti_nota(studenti_lab, lab_id):
 def stat_stud_lab(studenti, lab_id):
     studenti_lab = get_studenti_lab(studenti, lab_id)
     if studenti_lab != []:
-        studenti_lab = sort_studenti_nota(studenti_lab,lab_id)
+        studenti_lab = sort_studenti_nota(studenti_lab, lab_id)
         studenti_lab = sort_studenti_nume(studenti_lab, lab_id)
         return studenti_lab
     else:
         raise Exception("Nu Există nici-un student participant la acest laborator!\n")
+
 
 def stat_stud_medie_5(studenti):
     st_list = []
@@ -96,3 +97,10 @@ def stat_stud_medie_5(studenti):
         return st_list
     else:
         raise Exception("Nu există nici-un student Corigent!")
+
+
+def stat_stud_lab_10(studenti, lab_id):
+    studenti_lab = stat_stud_lab(studenti,lab_id)
+    length = len(studenti_lab)
+    length //= 10
+    return studenti_lab[0:length]
