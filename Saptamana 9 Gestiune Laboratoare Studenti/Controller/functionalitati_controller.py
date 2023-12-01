@@ -100,7 +100,7 @@ def stat_stud_medie_5(studenti):
 
 
 def stat_stud_lab_10(studenti, lab_id):
-    studenti_lab = stat_stud_lab(studenti,lab_id)
+    studenti_lab = stat_stud_lab(studenti, lab_id)
     length = len(studenti_lab)
     length //= 10
     return studenti_lab[0:length]

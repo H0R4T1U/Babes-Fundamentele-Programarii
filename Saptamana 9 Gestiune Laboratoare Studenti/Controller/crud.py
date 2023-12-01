@@ -17,7 +17,7 @@ def add_student(studenti, nume, grupa):
     try:
         valideaza_student(student, studenti)
     except ValueError as ve:
-        raise ValueError(str(ve)+"Studentul nu a fost adăugat!\n")
+        raise ValueError(str(ve) + "Studentul nu a fost adăugat!\n")
     else:
         studenti.append(student)
 
@@ -44,7 +44,7 @@ def modify_student(studenti, id, nume_nou, grupa_noua):
     try:
         student = get_student_by_id(studenti, id)
     except Exception as ex:
-        raise Exception(str(ex)+"Studentul nu a fost modificat\n")
+        raise Exception(str(ex) + "Studentul nu a fost modificat\n")
     else:
         if nume_nou == "":
             nume_nou = student.nume
@@ -61,7 +61,7 @@ def modify_student(studenti, id, nume_nou, grupa_noua):
                         studenti[i] = student_nou
                         return True
             else:
-                raise ValueError(str(ve)+"Studentul nu a fost modificat!\n")
+                raise ValueError(str(ve) + "Studentul nu a fost modificat!\n")
 
 
 def add_lab(laboratoare, nr_lab, descriere, deadline):
@@ -75,11 +75,12 @@ def add_lab(laboratoare, nr_lab, descriere, deadline):
     """
     lab = Laborator(nr_lab, descriere, deadline)
     try:
-       validate_lab(lab, laboratoare)
+        validate_lab(lab, laboratoare)
     except ValueError as ve:
-        raise ValueError(str(ve)+"Laboratorul nu a fost Adăugat!\n")
+        raise ValueError(str(ve) + "Laboratorul nu a fost Adăugat!\n")
     else:
         laboratoare.append(lab)
+
 
 def delete_lab(laboratoare, id):
     """
@@ -120,7 +121,8 @@ def modify_lab(laboratoare, id, descriere_noua, deadline_nou):
                         laboratoare[i] = lab_nou
                         return True
             else:
-                raise ValueError(str(ve)+"Laboratorul nu a fost modificat!\n")
+                raise ValueError(str(ve) + "Laboratorul nu a fost modificat!\n")
+
 
 def delete_student_id(studenti, id):
     """

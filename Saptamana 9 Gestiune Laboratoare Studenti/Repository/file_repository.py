@@ -4,6 +4,7 @@ import string
 
 from Controller.asign_controller import assign_lab, assign_nota
 from Controller.crud import add_lab, add_student
+from Domain.Student import Student
 
 
 def random_date(start, end):
@@ -33,7 +34,7 @@ def create_x_students(x, studenti, laboratoare):
         nume = create_random_string(10)
         grupa = create_random_number(1, 999)
         add_student(studenti, nume, grupa)
-        for j in range(1,len(laboratoare) + 1):
+        for j in range(1, len(laboratoare) + 1):
             nota = random.randrange(1, 11)
             try:
                 assign_lab(studenti, laboratoare, j, None, i)
@@ -45,7 +46,34 @@ def create_x_students(x, studenti, laboratoare):
 def create_x_labs(x, laboratoare):
     start = datetime.datetime.strptime('1 1 2023', '%d %m %Y')
     stop = datetime.datetime.strptime('31 12 2024', '%d %m %Y')
-    for i in range(len(laboratoare) +1, x + 1):
+    for i in range(len(laboratoare) + 1, len(laboratoare)+ x + 1):
         descriere = create_random_string(7)
         data = random_date(start, stop)
         add_lab(laboratoare, i, descriere, data)
+
+class StudentsRepository:
+    def __init__(self,file_name,students):
+        self.__file_name = file_name
+        self.__students = students
+
+    def __load_from_file(self):
+        try:
+            file = open(self.__file_name,'r')
+        except IOError:
+            raise IOError("Corupted File!")
+        students = []
+        lines = file.readlines()
+        for line in lines:
+            id,nume,grupa = [token.strip() for token in line.split(';')]
+            student = Student(id,nume,grupa)
+            students.append(student)
+        file.close()
+        return students
+
+    def __save_to_file(self,stud_list):
+        with open(self.__file_name, 'w') as f:
+            for stud in stud_list:
+                stud_string = str(stud.id)+ ';' + stud.nume + ';' + str(
+                    stud.grupa) + '\n'
+                f.write(stud_string)
+

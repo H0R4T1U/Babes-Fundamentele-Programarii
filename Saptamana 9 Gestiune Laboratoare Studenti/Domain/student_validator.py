@@ -1,5 +1,3 @@
-from Domain.Student import Student
-
 
 def valideaza_student(student, studenti):
     """

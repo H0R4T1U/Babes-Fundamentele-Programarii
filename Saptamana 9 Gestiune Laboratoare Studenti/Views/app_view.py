@@ -16,7 +16,7 @@ def afiseaza_note_studenti(studenti, id):
     print("-=" * 50)
     for stud in studenti:
         ind = stud.get_lab_ind(id)
-        print(f'{stud.nume}, {stud.note[ind]}')
+        print(f'{stud.id}. {stud.nume}, {stud.note[ind]}')
     print("-=" * 50)
 
 
@@ -26,6 +26,6 @@ def afiseaza_stud_corigenti(studenti):
         note = ""
         for nota in stud.note:
             note += f" {nota}"
-        print(f'{stud.nume},{note}')
+        print(f'{stud.id}. {stud.nume},{note}')
 
     print("-=" * 50)
